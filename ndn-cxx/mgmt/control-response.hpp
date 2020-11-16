@@ -38,7 +38,9 @@ public:
     using tlv::Error::Error;
   };
 
-  virtual ~ControlResponse();
+  ControlResponse(); 
+
+  virtual ~ControlResponse() {}
 
   ControlResponse(uint32_t code, const std::string& text);
 
