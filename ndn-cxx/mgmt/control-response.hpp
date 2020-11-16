@@ -38,7 +38,7 @@ public:
     using tlv::Error::Error;
   };
 
-  ControlResponse();
+  virtual ~ControlResponse();
 
   ControlResponse(uint32_t code, const std::string& text);
 
@@ -63,7 +63,7 @@ public:
   ControlResponse&
   setBody(const Block& body);
 
-  const Block&
+  virtual const Block&
   wireEncode() const;
 
   void
