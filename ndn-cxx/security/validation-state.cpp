@@ -129,6 +129,15 @@ DataValidationState::bypassValidation()
 }
 
 void
+DataValidationState::digestValidation()
+{
+  NDN_LOG_TRACE_DEPTH("Digest verification for data `" << m_data.getName() << "`");
+  m_successCb(m_data);
+  BOOST_ASSERT(boost::logic::indeterminate(m_outcome));
+  m_outcome = true;
+}
+
+void
 DataValidationState::fail(const ValidationError& error)
 {
   NDN_LOG_DEBUG_DEPTH(error);
@@ -183,6 +192,15 @@ void
 InterestValidationState::bypassValidation()
 {
   NDN_LOG_TRACE_DEPTH("Signature verification bypassed for interest `" << m_interest.getName() << "`");
+  this->afterSuccess(m_interest);
+  BOOST_ASSERT(boost::logic::indeterminate(m_outcome));
+  m_outcome = true;
+}
+
+void
+InterestValidationState::digestValidation()
+{
+  NDN_LOG_TRACE_DEPTH("Digest verification for interest `" << m_interest.getName() << "`");
   this->afterSuccess(m_interest);
   BOOST_ASSERT(boost::logic::indeterminate(m_outcome));
   m_outcome = true;

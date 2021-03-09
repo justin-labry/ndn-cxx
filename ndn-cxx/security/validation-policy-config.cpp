@@ -19,6 +19,7 @@
  * See AUTHORS.md for complete list of ndn-cxx authors and contributors.
  */
 
+#include "ndn-cxx/security/verification-helpers.hpp"
 #include "ndn-cxx/security/validation-policy-config.hpp"
 #include "ndn-cxx/security/validator.hpp"
 #include "ndn-cxx/util/io.hpp"
@@ -30,10 +31,15 @@
 
 #include <fstream>
 
+#include <ndn-cxx/util/logger.hpp>
+
+
 namespace ndn {
 namespace security {
 inline namespace v2 {
 namespace validator_config {
+
+NDN_LOG_INIT(ndn.security.v2.ValidationPolicyConfig);
 
 void
 ValidationPolicyConfig::load(const std::string& filename)
@@ -243,6 +249,19 @@ ValidationPolicyConfig::checkPolicy(const Data& data, const shared_ptr<Validatio
   Name klName = getKeyLocatorName(data, *state);
   if (!state->getOutcome()) { // already failed
     return;
+  }
+
+  if (data.getSignatureType() == ndn::tlv::SignatureTypeValue::DigestSha256) {
+    bool result = verifyDigest(data, DigestAlgorithm::SHA256);
+    if(!result) {
+      NDN_LOG_DEBUG("digest-sha256 successful.");
+      return continueValidation(make_shared<CertificateRequest>(klName), state);
+    }else {
+      std::ostringstream os;
+      os << "DigestAlgorithm:SHA256 check failed.";
+      return state->fail({ValidationError::INVALID_SIGNATURE, os.str()});
+      //return continueValidation(make_shared<CertificateRequest>(klName), state);
+    }
   }
 
   for (const auto& rule : m_dataRules) {
