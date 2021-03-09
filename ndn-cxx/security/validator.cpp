@@ -83,7 +83,10 @@ Validator::validate(const Data& data,
       [this] (const shared_ptr<CertificateRequest>& certRequest, const shared_ptr<ValidationState>& state) {
       if (certRequest == nullptr) {
         state->bypassValidation();
-      }
+      } 
+      else if (certRequest->interest.getName() == SigningInfo::getDigestSha256Identity()) {
+        state->digestValidation();
+      } 
       else {
         // need to fetch key and validate it
         requestCertificate(certRequest, state);
