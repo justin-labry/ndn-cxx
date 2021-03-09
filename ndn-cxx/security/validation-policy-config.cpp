@@ -250,7 +250,7 @@ ValidationPolicyConfig::checkPolicy(const Data& data, const shared_ptr<Validatio
   if (klName == SigningInfo::getDigestSha256Identity()) {
     bool result = verifyDigest(data, DigestAlgorithm::SHA256);
     if(result) {
-      NDN_LOG_DEBUG("digest-sha256 successful.");
+     NDN_LOG_DEBUG("digest-sha256 successful.");
       return continueValidation(make_shared<CertificateRequest>(klName), state);
     }else {
       std::ostringstream os;
@@ -263,7 +263,7 @@ ValidationPolicyConfig::checkPolicy(const Data& data, const shared_ptr<Validatio
     return continueValidation(nullptr, state);
   }
 
-  for (const auto& rule : m_dataRules) {
+ for (const auto& rule : m_dataRules) {
     if (rule->match(tlv::Data, data.getName(), state)) {
       if (rule->check(tlv::Data, data.getName(), klName, state)) {
         return continueValidation(make_shared<CertificateRequest>(klName), state);

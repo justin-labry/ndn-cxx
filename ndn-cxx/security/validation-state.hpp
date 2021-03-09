@@ -119,7 +119,7 @@ private: // Interface intended to be used only by Validator class
   virtual void
   bypassValidation() = 0;
 
-    /**
+  /**
    * @brief Call success callback of the original packet with digest validation
    */
   virtual void
