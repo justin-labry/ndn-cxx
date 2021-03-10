@@ -242,26 +242,25 @@ ValidationPolicyConfig::checkPolicy(const Data& data, const shared_ptr<Validatio
 {
   BOOST_ASSERT_MSG(!hasInnerPolicy(), "ValidationPolicyConfig must be a terminal inner policy");
 
-  if (m_shouldBypass) {
-    return continueValidation(nullptr, state);
-  }
-
   Name klName = getKeyLocatorName(data, *state);
   if (!state->getOutcome()) { // already failed
     return;
   }
 
-  if (data.getSignatureType() == ndn::tlv::SignatureTypeValue::DigestSha256) {
+  if (klName == SigningInfo::getDigestSha256Identity()) {
     bool result = verifyDigest(data, DigestAlgorithm::SHA256);
-    if(!result) {
+    if(result) {
       NDN_LOG_DEBUG("digest-sha256 successful.");
       return continueValidation(make_shared<CertificateRequest>(klName), state);
     }else {
       std::ostringstream os;
       os << "DigestAlgorithm:SHA256 check failed.";
       return state->fail({ValidationError::INVALID_SIGNATURE, os.str()});
-      //return continueValidation(make_shared<CertificateRequest>(klName), state);
     }
+  }
+
+  if (m_shouldBypass) {
+    return continueValidation(nullptr, state);
   }
 
   for (const auto& rule : m_dataRules) {
