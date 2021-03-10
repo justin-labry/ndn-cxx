@@ -119,6 +119,12 @@ private: // Interface intended to be used only by Validator class
   virtual void
   bypassValidation() = 0;
 
+    /**
+   * @brief Call success callback of the original packet with digest validation
+   */
+  virtual void
+  digestValidation() = 0;
+
   /**
    * @brief Verify signatures of certificates in the certificate chain
    *
@@ -193,6 +199,9 @@ private:
   void
   bypassValidation() final;
 
+  void
+  digestValidation() final;
+
 private:
   Data m_data;
   DataValidationSuccessCallback m_successCb;
@@ -241,6 +250,10 @@ private:
 
   void
   bypassValidation() final;
+
+  void
+  digestValidation() final;
+
 
 private:
   Interest m_interest;

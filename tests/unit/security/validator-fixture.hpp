@@ -169,6 +169,12 @@ private:
   {
     // do nothing
   }
+
+  void
+  digestValidation() override
+  {
+    // do nothing
+  }
 };
 
 struct DataPkt
